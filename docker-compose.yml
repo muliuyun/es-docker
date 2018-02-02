@@ -1,0 +1,55 @@
+version: '2.2'
+services:
+
+  elasticsearch:
+    image: liuyundc/ei
+    container_name: elasticsearch
+    environment:
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms256m -Xmx256m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - ${ES1_DATA_SAVE_PATH}:/usr/share/elasticsearch/data
+    ports:
+      - ${ELASTICSEARCH_PORT}:9200
+    networks:
+      - esnet
+      
+  elasticsearch2:
+    image: liuyundc/ei
+    container_name: elasticsearch2
+    environment:
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms256m -Xmx256m"
+      - "discovery.zen.ping.unicast.hosts=elasticsearch"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - ${ES2_DATA_SAVE_PATH}:/usr/share/elasticsearch/data
+    networks:
+      - esnet
+  kibana:
+    image: liuyundc/kibana
+    volumes:
+      - ./config/kibana.yml:/usr/share/kibana/config/kibana.yml
+    ports:
+      - ${KIBANA_PORT}:5601
+    networks:
+      - esnet
+
+
+volumes:
+  esdata1:
+    driver: local
+  esdata2:
+    driver: local
+
+networks:
+  esnet:

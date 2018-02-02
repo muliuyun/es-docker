@@ -1,0 +1,6 @@
+FROM liuyundc/elasticsearch
+
+WORKDIR /usr/share/elasticsearch
+
+RUN ./bin/elasticsearch-plugin install https://github.com/muliuyun/elasticsearch-analysis-ik/releases/download/v6.1.3/elasticsearch-analysis-ik-6.1.3.zip
+
